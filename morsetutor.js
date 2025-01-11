@@ -66,21 +66,27 @@ var morseTutorUi = function() {
 
         let inputTag = document.createElement("input");
         inputTag.setAttribute('type','checkbox');
-        inputTag.addEventListener('click',this.toggle.bind(this));
+      inputTag.addEventListener('click',this.toggle.bind(this));
+      this.inputTag = inputTag;
         listTag.appendChild(inputTag);
         return listTag;
     };
 
     Letter.prototype.toggle = function() {
-        this.enabled = !this.enabled;
-        if (this.enabled) {
-            enabledAlphabet.push(this); 
+      this.setEnabled(!this.enabled);
+    }
+
+  Letter.prototype.setEnabled = function(newEnable)  {
+    if (this.enabled != newEnable) {
+      if (newEnable) {
+            enabledAlphabet.push(this);
         }  else {
             let idx = enabledAlphabet.indexOf(this);
             enabledAlphabet.splice(idx, 1);
         }
-
-    };
+      this.enabled = newEnable;
+    }
+  }
 
     const alphabet = [
         new Letter("a",".-"),
@@ -124,7 +130,20 @@ var morseTutorUi = function() {
     const enabledAlphabet = [];
 
     var currentSequence = [];
-    
+
+/**
+ * Set all letters either true or false
+ */
+  function setAllLetters(to) {
+    alphabet.forEach(function (letter) {
+      console.log("Setting letter "+ letter + " to  " + to);
+      letter.inputTag.checked = to;
+    letter.setEnabled(to)
+  });
+}
+
+
+
     /**
      * Get a single random Letter object from the enabled alphabet.
      */
@@ -268,7 +287,8 @@ var morseTutorUi = function() {
         stop,
         enabledAlphabet:enabledAlphabet, 
         currentSequence,
-        showLastSequence,
+      showLastSequence,
+      setAllLetters
     }
 
 }();

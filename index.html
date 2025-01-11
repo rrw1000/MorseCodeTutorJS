@@ -1,73 +1,369 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>
-    Morse Code Tutor
-</title>
-<meta charset="UTF-8">
+    <title>Morse Code Tutor</title>
+    <meta charset="UTF-8">
+    <style>
+        :root {
+            /* Light theme variables */
+            --primary-color: #647687;
+            --primary-hover: #4a5a6a;
+            --secondary-color: #94a3b8;
+            --background-color: #f8fafc;
+            --surface-color: #ffffff;
+            --border-color: #e2e8f0;
+            --success-color: #69a088;
+            --danger-color: #b47d6f;
+            --text-color: #475569;
+            --text-secondary: #64748b;
+            --input-background: #fcfcfc;
+        }
+
+        [data-theme="dark"] {
+            /* Dark theme variables */
+            --primary-color: #89a0b5;
+            --primary-hover: #a3b5c9;
+            --secondary-color: #64748b;
+            --background-color: #1a1f2b;
+            --surface-color: #242936;
+            --border-color: #374151;
+            --success-color: #7ab5a0;
+            --danger-color: #c48b7d;
+            --text-color: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --input-background: #1a1f2b;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.5;
+            transition: background-color 0.3s ease;
+        }
+
+        .theme-switch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-color);
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .theme-switch:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 800;
+        }
+
+        fieldset {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: var(--surface-color);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            transition: all 0.2s ease;
+        }
+
+        fieldset:hover {
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08);
+        }
+
+        legend {
+            background-color: var(--primary-color);
+            color: var(--surface-color);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .group-controls {
+            display: flex;
+            gap: 20px;
+        }
+
+        .group-controls fieldset {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            height: 6px;
+            -webkit-appearance: none;
+            background: var(--border-color);
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+
+        input[type="number"] {
+            width: 80px;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: var(--text-color);
+            background-color: var(--input-background);
+            transition: all 0.2s ease;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(100, 118, 135, 0.1);
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: var(--surface-color);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        #alphabet {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 10px;
+        }
+
+        #alphabet li {
+            padding: 10px;
+            text-align: center;
+            background-color: var(--input-background);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        #alphabet li:hover {
+            background-color: var(--primary-color);
+            color: var(--surface-color);
+        }
+
+        #sequenceShow {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            min-height: 50px;
+            background-color: var(--surface-color);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            font-family: monospace;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+            color: var(--text-color);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .letter-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .letter-controls button {
+            background-color: var(--secondary-color);
+            flex: 1;
+        }
+
+        .action-buttons button:first-child {
+            background-color: var(--success-color);
+        }
+
+        .action-buttons button:last-child {
+            background-color: var(--danger-color);
+        }
+
+        @media (max-width: 640px) {
+            .group-controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .action-buttons button {
+                width: 100%;
+            }
+
+            .theme-switch {
+                top: auto;
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
+    <button class="theme-switch" onclick="toggleTheme()">
+        <span class="theme-icon">🌓</span>
+        <span class="theme-text">Toggle Theme</span>
+    </button>
+
+    <h1>Morse Code Tutor</h1>
+
     <fieldset>
         <legend>Tone Options</legend>
-        <fieldset> 
+        <fieldset>
             <legend>Tone (Hz)</legend>
-            <input type="range" id="frequencyRange" oninput="morseTutorUi.updateFrequency(this.value)"></input>
-            <input type="number" id="frequencyNum" oninput="morseTutorUi.updateFrequency(this.value)"></input>
+            <div class="control-group">
+                <input type="range" id="frequencyRange" oninput="morseTutorUi.updateFrequency(this.value)" min="300" max="1000" step="10">
+                <input type="number" id="frequencyNum" oninput="morseTutorUi.updateFrequency(this.value)" min="300" max="1000">
+            </div>
         </fieldset>
         <fieldset>
             <legend>Tone Volume</legend>
-            <input type="range" id="volumeRange" oninput="morseTutorUi.updateVolume(this.value)"></input>
-            <input type="number" id="volumeNum" oninput="morseTutorUi.updateVolume(this.value)"></input>
+            <div class="control-group">
+                <input type="range" id="volumeRange" oninput="morseTutorUi.updateVolume(this.value)" min="0" max="100" step="1">
+                <input type="number" id="volumeNum" oninput="morseTutorUi.updateVolume(this.value)" min="0" max="100">
+            </div>
         </fieldset>
     </fieldset>
+
     <fieldset>
         <legend>Send Options</legend>
         <fieldset>
             <legend>Send Speed (WPM)</legend>
-            <input type="range" id="sendSpeedRange" oninput="morseTutorUi.updateSendSpeed(this.value)"></input>
-            <input type="number" id="sendSpeedNum" oninput="morseTutorUi.updateSendSpeed(this.value)"></input>
+            <div class="control-group">
+                <input type="range" id="sendSpeedRange" oninput="morseTutorUi.updateSendSpeed(this.value)" min="5" max="40" step="1">
+                <input type="number" id="sendSpeedNum" oninput="morseTutorUi.updateSendSpeed(this.value)" min="5" max="40">
+            </div>
         </fieldset>
-        <fieldset>
-            <legend>Group Size (letters)</legend>
-            <input type="number" id="sendGroupSize" oninput="morseTutorUi.updateGroupSize(this.value)"></input>
-        </fieldset>
-        <fieldset>
-            <legend>Number of Groups</legend>
-            <input type="number" id="sendGroupsCount" oninput="morseTutorUi.updateGroupCount(this.value)"></input>
-        </fieldset>
+        <div class="group-controls">
+            <fieldset>
+                <legend>Group Size (letters)</legend>
+                <div class="control-group">
+                    <input type="number" id="sendGroupSize" oninput="morseTutorUi.updateGroupSize(this.value)" min="1" max="10" value="5">
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>Number of Groups</legend>
+                <div class="control-group">
+                    <input type="number" id="sendGroupsCount" oninput="morseTutorUi.updateGroupCount(this.value)" min="1" max="20" value="5">
+                </div>
+            </fieldset>
+        </div>
     </fieldset>
+
     <fieldset>
-      <legend>Letter groups</legend>
-      <button onClick="morseTutorUi.setAllLetters(true)">All</button>
-      <button onClick="morseTutorUi.setAllLetters(false)">None</button>
+        <legend>Letter Groups</legend>
+        <div class="letter-controls">
+            <button onClick="morseTutorUi.setAllLetters(true)">Select All</button>
+            <button onClick="morseTutorUi.setAllLetters(false)">Clear All</button>
+        </div>
     </fieldset>
+
     <fieldset>
         <legend>Alphabet</legend>
-            <ul id="alphabet" style="column-width: 5em; column-count: 5;">	
-                <!-- Javascript adds letters to the DOM here -->
-            </ul>
+        <ul id="alphabet"></ul>
     </fieldset>
-    <fieldset>
-        <button onClick="morseTutorUi.sendRandomSequence()">Send new random sequence</button>  
-        <button onClick="morseTutorUi.resendSequence()">Resend Sequence</button>  
-        <button onClick="morseTutorUi.showLastSequence()">Show Last Sequence</button>  
-        <button onClick="morseTutorUi.stop()">Stop Sending</button>
-    </fieldset>
-    <div id="sequenceShow">
 
-    </div>
-    <!-- Okay, To start with I think I want to have some simple settings here:
-        - Enabled Alphabet
-        - Type of example to send
-            - ie, one letter at a time, 3 letter groups, real sentences? 
-            - Maybe Have this as a preset of some sort?  
-        - Send speed (wpm)
-        - Pitch setting
-        - QRM?
-        -->
-    <script src="./morsesender.js">
-    </script>  
-    <script src="./morsetutor.js">
+    <fieldset>
+        <legend>Controls</legend>
+        <div class="action-buttons">
+            <button onClick="morseTutorUi.sendRandomSequence()">Send New Random Sequence</button>
+            <button onClick="morseTutorUi.resendSequence()">Resend Sequence</button>
+            <button onClick="morseTutorUi.showLastSequence()">Show Last Sequence</button>
+            <button onClick="morseTutorUi.stop()">Stop Sending</button>
+        </div>
+    </fieldset>
+
+    <div id="sequenceShow"></div>
+
+    <script>
+        // Theme toggle functionality
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+
+        // Set initial theme based on localStorage or system preference
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.body.setAttribute('data-theme', savedTheme);
+            } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.body.setAttribute('data-theme', 'dark');
+            }
+        }
+
+        // Initialize theme on page load
+        initializeTheme();
     </script>
+
+    <script src="./morsesender.js"></script>
+    <script src="./morsetutor.js"></script>
 </body>
 </html>
